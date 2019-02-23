@@ -9,69 +9,72 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class listaCustomizada extends ArrayAdapter<String> {
+import java.util.ArrayList;
 
-    private String [] tvPeso;
-    private String [] tvImc;
-    private String [] tvPesoGanho;
-    private String [] tvData;
+public class listaCustomizada extends ArrayAdapter<Historico> {
+    private ArrayList<Historico> lista;
+    Context context;
 
-    private Context context;
-
-
-    public listaCustomizada(Context context, String [] tvPeso, String[] tvImc, String[] tvPesoGanho, String[] tvData) {
-        super(context, R.layout.layoutlista, tvPeso);
-
+    //Construtor da classe   //Necessário por causa do Extends
+    public listaCustomizada(ArrayList<Historico> dados, Context context) {
+        super(context, R.layout.layoutlista, dados);
+        this.lista = dados;
         this.context = context;
-        this.tvPeso = tvPeso;
-        this.tvImc = tvImc;
-        this.tvPesoGanho = tvPesoGanho;
-        this.tvData = tvData;
-
     }
 
-    public View getView (int position, @Nullable View convertView, @NonNull ViewGroup parent){
-        View r = convertView;
-        ViewHolder viewHolder = null;
-        if(r==null)
-        {
+    //Classe que define quais componentes serão usados para cada item da lista
+    //Os componentes seguem o mesmo conteúdo definido no layout XML de cada item
+    private static class ViewHolder{
+        TextView peso;
+        TextView imc;
+        TextView pesoganho;
+        TextView data;
+    }
 
+    //Sobrescrita de método utilizado para definir o que acontece para cada item quando for montar
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        //Recupera os itens que serão adicionados na lista
+        Historico hist = getItem(position);
+
+        //Criação de uma View temporária para poder encontrar os componentes da tela e vincular um valor
+        ViewHolder viewHolder;
+
+        //View aonde será adicionado todos os componentes já prontos
+        View resultado;
+
+        //Teste para verificar se a View que veio pelo método "getView" está vazia
+        if(convertView == null){
+            //Criação de uma ViewHolder nova para poder configurar cada componente da tela
+            viewHolder = new ViewHolder();
+
+            //Classe responsável por vincular um layout XML
             LayoutInflater inflater = LayoutInflater.from(getContext());
 
-            r = inflater.inflate(R.layout.layoutlista, null, true);
-            viewHolder = new ViewHolder(r);
-            r.setTag(viewHolder);
+            //Indicando qual layout XML será utilizado para preenchimento
+            convertView = inflater.inflate(R.layout.layoutlista, parent, false);
 
-        }else {
+            //Vinculando cada componente do XML com o componente do Adapter
+            viewHolder.peso = (TextView) convertView.findViewById(R.id.tvPesoLista);
+            viewHolder.imc = (TextView) convertView.findViewById(R.id.tvImcLista);
+            viewHolder.pesoganho = (TextView) convertView.findViewById(R.id.tvPesoDiferenca);
+            viewHolder.data = (TextView) convertView.findViewById(R.id.tvDataLista);
 
-            viewHolder = (ViewHolder) r.getTag();
+            //Atribuindo todos os componentes para a View
+            resultado = convertView;
+            convertView.setTag(viewHolder);
+        }else{
+            viewHolder = (ViewHolder) convertView.getTag();
+            resultado = convertView;
         }
 
+        //Atribuindo valores para cada componente da tela
+        viewHolder.peso.setText("" +hist.getNovoPeso());
+        viewHolder.imc.setText("" +hist.getNovoImc());
+        viewHolder.pesoganho.setText("" + hist.getNovoRestante());
+        viewHolder.data.setText("" + hist.getNovaData());
 
-        viewHolder.tvw1.setText("" + tvPeso[position]);
-        viewHolder.tvw2.setText("" + tvImc[position]);
-        viewHolder.tvw3.setText("" + tvPesoGanho[position]);
-        viewHolder.tvw4.setText("" + tvData[position]);
-
-
-        return r;
-
-
-
-
+        return convertView;
 
     }
-    class ViewHolder
-    {
-        TextView tvw1, tvw2, tvw3, tvw4;
-
-        ViewHolder(View v)
-        {
-            tvw1 = v.findViewById(R.id.tvPesoLista);
-            tvw2 = v.findViewById(R.id.tvImcLista);
-            tvw3 = v.findViewById(R.id.tvPesoDiferenca);
-            tvw4 = v.findViewById(R.id.tvDataLista);
-        }
-    }
-
 }
