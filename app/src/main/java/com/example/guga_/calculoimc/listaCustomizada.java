@@ -1,6 +1,7 @@
 package com.example.guga_.calculoimc;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -69,9 +70,21 @@ public class listaCustomizada extends ArrayAdapter<Historico> {
         }
 
         //Atribuindo valores para cada componente da tela
+
         viewHolder.peso.setText("" +hist.getNovoPeso());
         viewHolder.imc.setText("" +hist.getNovoImc());
-        viewHolder.pesoganho.setText("" + hist.getNovoRestante());
+
+        if(hist.getNovoRestante() < 0){
+            viewHolder.pesoganho.setTextColor(Color.GREEN);
+            viewHolder.pesoganho.setText("+ " + hist.getNovoRestante()*-1);
+        }else if (hist.getNovoRestante() > 0){
+            viewHolder.pesoganho.setTextColor(Color.RED);
+            viewHolder.pesoganho.setText("" + hist.getNovoRestante()*-1);
+        }else if(hist.getNovoRestante() == 0){
+            viewHolder.pesoganho.setText("" + hist.getNovoRestante());
+        }
+
+
         viewHolder.data.setText("" + hist.getNovaData());
 
         return convertView;

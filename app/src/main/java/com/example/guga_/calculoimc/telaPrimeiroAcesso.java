@@ -4,16 +4,32 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import static com.example.guga_.calculoimc.telaAdicionarDados.current;
+
 public class telaPrimeiroAcesso extends AppCompatActivity {
+
+
+    @Override public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            // do something on back.
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event); }
+
 
     EditText txtAltura, txtPeso2;
     Button btnSalvar;
@@ -24,35 +40,40 @@ public class telaPrimeiroAcesso extends AppCompatActivity {
         setContentView(R.layout.activity_tela_primeiro_acesso);
 
 
+
         txtAltura = findViewById(R.id.txtAltura);
         txtPeso2 = findViewById(R.id.txtPeso2);
         btnSalvar = findViewById(R.id.btnSalvar);
 
         txtAltura.addTextChangedListener(Mascara.mask(txtAltura, Mascara.FORMAT_ALTURA));
-        txtPeso2.addTextChangedListener(Mascara.mask(txtPeso2, Mascara.FORMAT_PESO2));
 
 
-        txtPeso2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+        txtPeso2.addTextChangedListener(new TextWatcher()
+        {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
 
-                    if (txtPeso2.getText().length() == 5) {
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
-                        txtPeso2.setText("0" + txtPeso2.getText().toString());
-
-                    } else if (txtPeso2.getText().length() == 4) {
-
-                        txtPeso2.setText(txtPeso2.getText().toString() + "00");
-
-                    }
-
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!editable.toString().equals(current)) {
+                    double value = Double.parseDouble(editable.toString().replace(".", "")) / 100;
+                    DecimalFormat format = new DecimalFormat("0.00");
+                    String formatted = format.format(value);
+                    current = formatted;
+                    txtPeso2.setText(current);
+                    txtPeso2.setSelection(current.length());
                 }
-
-
             }
 
         });
+
+
 
 
 
@@ -65,9 +86,11 @@ public class telaPrimeiroAcesso extends AppCompatActivity {
 
                         Toast.makeText(telaPrimeiroAcesso.this, "Algum campo está em branco, preencha-o", Toast.LENGTH_SHORT).show();
 
-                    } else if(txtPeso2.getText().length() == 2)
+                    } else if(Double.parseDouble(txtAltura.getText().toString()) > 2.80)
                     {
-                        Toast.makeText(telaPrimeiroAcesso.this, "Preencha corretamente o campo peso", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(telaPrimeiroAcesso.this, "Verifique se digitou corretamente sua altura", Toast.LENGTH_SHORT).show();
+                    }else if(Double.parseDouble(txtPeso2.getText().toString()) > 550) {
+                        Toast.makeText(telaPrimeiroAcesso.this, "Verifique se digitou corretamente seu peso", Toast.LENGTH_SHORT).show();
                     }
                     else
                     {
@@ -101,11 +124,15 @@ public class telaPrimeiroAcesso extends AppCompatActivity {
                         BancoDeDados db = new BancoDeDados(telaPrimeiroAcesso.this, 1);
 
 
+
                         if(db.cadastrarUsu(pesoInicial, pesoAtual, pesoIdealformatado, pesoRestante, altura, imcFormatado, dataFormatada))
                         {
                             Toast.makeText(telaPrimeiroAcesso.this, "Usuario cadastrado", Toast.LENGTH_SHORT ).show();
                             SharedPreferences.Editor editor = getSharedPreferences("dados", MODE_PRIVATE).edit();
                             editor.putString("valorAcesso", "acessosalvo");
+                            editor.putString("pesoInicial", String.valueOf(pesoInicial));
+                            editor.putString("alturaInicial", String.valueOf(altura));
+                            editor.putString("pesoIdeal", String.valueOf(pesoIdeal));
                             editor.apply();
 
                             Intent it = new Intent(telaPrimeiroAcesso.this, Principal.class);

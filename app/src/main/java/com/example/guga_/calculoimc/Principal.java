@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -40,12 +41,13 @@ public class Principal extends AppCompatActivity {
     ProgressBar barraProgresso;
 
     TextView tvpeso, tvImc, tvrestante;
-    TextView tvpesoInicialNum, tvPesoAtualnum, tvImcAtualNum, tvPesoIdealNum;
+    TextView tvpesoInicialNum, tvPesoAtualnum, tvImcAtualNum, tvPesoIdealNum, tvPesoRestanteNum;
 
     double pesoAtualvar;
     double pesoInicialvar;
     double pesoIdealVar;
     double imcVar;
+    double pesoRestante;
 
     ListView lista;
 
@@ -159,6 +161,7 @@ public class Principal extends AppCompatActivity {
         tvpesoInicialNum = findViewById(R.id.tvPesoInicialNum);
         tvPesoIdealNum = findViewById(R.id.tvPesoIdealNum);
         tvImcAtualNum = findViewById(R.id.tvImc);
+        tvPesoRestanteNum = findViewById(R.id.tvPesoFaltante);
 //        tvImcAtualNum;
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -177,11 +180,25 @@ public class Principal extends AppCompatActivity {
                 pesoInicialvar = res.getDouble(0);
                 pesoAtualvar = res.getDouble(1);
                 pesoIdealVar = res.getDouble(2);
-                double pesoRestante = res.getDouble(3);
+                pesoRestante = res.getDouble(3);
                 double altura = res.getDouble(4);
                 imcVar = res.getDouble(5);
                 String data = res.getString(6);
             }
+
+        }
+
+
+
+        if(pesoRestante < 0){
+            tvPesoRestanteNum.setTextColor(Color.GREEN);
+            tvPesoRestanteNum.setText("Faltam ganhar  +" + pesoRestante*-1+" kg");
+        }else if(pesoRestante>0){
+            tvPesoRestanteNum.setTextColor(Color.RED);
+            tvPesoRestanteNum.setText("Faltam perder  " + pesoRestante*-1+" kg");
+        }else if (pesoRestante == 0){
+
+            tvPesoRestanteNum.setText("Você está no Peso Ideal");
 
         }
 

@@ -140,36 +140,69 @@ public class BancoDeDados extends SQLiteOpenHelper {
 
     }
 
-//    public Boolean atualizaUsu(double pesoAtual, double pesoIdeal, double pesoRestante, double imc, String data){
-//        SQLiteDatabase banco = getWritableDatabase(); //Conexão com o banco de dados
-//
-//        //Passagem de valores para as colunas da tabela
-//        ContentValues valoresUsu = new ContentValues();
-//        valoresUsu.put("pesoAtual", pesoAtual);
-//        valoresUsu.put("pesoIdeal", pesoIdeal);
-//        valoresUsu.put("pesoRestante", pesoRestante);
-//        valoresUsu.put("imc", imc);
-//        valoresUsu.put("data", data);
-//
-//        ContentValues valoresHist = new ContentValues();
-//
-//        valoresHist.put("novoPeso", pesoAtual);
-//        valoresHist.put("novoImc", imc);
-//        valoresHist.put("novoRestante", pesoRestante);
-//        valoresHist.put("novaData", data);
-//
-//
-//
-//        if(banco.update("usuario", valoresUsu, "pesoAtual= ?")!= -1 &&
-//                banco.insert("historico", null, valoresHist) != -1){
-//            return true;
-//        }else{
-//            return false;
-//        }
-//
-//
-//
-//    }
+        public boolean updateUsu(double pesoInicial, double pesoAtual, double imc, double pesoRestante, String data) {
+            SQLiteDatabase banco = getWritableDatabase();
+
+            ContentValues valores = new ContentValues();
+            valores.put("pesoAtual", pesoAtual);
+            valores.put("pesoRestante", pesoRestante);
+            valores.put("imc", imc);
+
+            ContentValues valoresHist = new ContentValues();
+
+            valoresHist.put("novoPeso", pesoAtual);
+            valoresHist.put("novoImc", imc);
+            valoresHist.put("novoRestante", pesoRestante);
+            valoresHist.put("novaData", data);
+
+
+//            "pesoInicial REAL NOT NULL, " +
+//                    "pesoAtual REAL NOT NULL, " +
+//                    "pesoIdeal REAL NOT NULL, " +
+//                    "pesoRestante REAL NOT NULL, " +
+//                    "altura REAL NOT NULL," +
+//                    "imc REAL NOT NULL, " +
+//                    "data TEXT NOT NULL);";
+
+
+            if (banco.update("usuario", valores, "pesoInicial = ?", new String[]{pesoInicial + ""}) != -1 &&
+                    banco.insert("historico", null, valoresHist) != -1) {
+                return true;
+            } else
+                return false;
+
+        }
+
+    public Boolean atualizaUsu(String pesoAtual, double pesoIdeal, double pesoRestante, double imc, String data){
+        SQLiteDatabase banco = getWritableDatabase(); //Conexão com o banco de dados
+
+        //Passagem de valores para as colunas da tabela
+        ContentValues valoresUsu = new ContentValues();
+        valoresUsu.put("pesoAtual", pesoAtual);
+        valoresUsu.put("pesoIdeal", pesoIdeal);
+        valoresUsu.put("pesoRestante", pesoRestante);
+        valoresUsu.put("imc", imc);
+        valoresUsu.put("data", data);
+
+        ContentValues valoresHist = new ContentValues();
+
+        valoresHist.put("novoPeso", pesoAtual);
+        valoresHist.put("novoImc", imc);
+        valoresHist.put("novoRestante", pesoRestante);
+        valoresHist.put("novaData", data);
+
+
+
+        if(banco.update("usuario", valoresUsu, "pesoAtual=?", new String[] {pesoAtual})!= -1 &&
+                banco.insert("historico", null, valoresHist) != -1){
+            return true;
+        }else{
+            return false;
+        }
+
+
+
+    }
 
 //    public boolean cadastrarHistorico(float novoPeso, float novoRestante, float novoImc, String novaData){
 //        SQLiteDatabase banco = getWritableDatabase(); //Conexão com o banco de dados
@@ -199,14 +232,7 @@ public class BancoDeDados extends SQLiteOpenHelper {
 //        return lista;
 //    }
 
-//    public boolean apagarFilme(int idFilme){
-//        SQLiteDatabase banco = getWritableDatabase();
-//
-//        if(banco.delete("filme", "_id = ?", new String[]{idFilme + ""}) != -1)
-//            return true;
-//        else
-//            return false;
-//    }
+
 
 
 
