@@ -72,12 +72,19 @@ public class telaAdicionarDados extends AppCompatActivity {
            @Override
            public void onClick(View v) {
 
+               BancoDeDados db = new BancoDeDados(telaAdicionarDados.this, 1);
+//
+//               if(db.atualizaUsu(pesoInicial, pesoAtual, pesoIdealformatado, pesoRestante, altura, imcFormatado, dataFormatada)) {
+//
+//
+//               }
 
-               SharedPreferences sharedPreferencess = telaSplash.contexto.getSharedPreferences("dados", Context.MODE_PRIVATE);
 
-               String acesso = sharedPreferencess.getString("valorAcesso", "");
 
-               Toast.makeText(telaAdicionarDados.this, "" + acesso, Toast.LENGTH_SHORT).show();
+
+
+
+//               Toast.makeText(telaAdicionarDados.this, "" + acesso, Toast.LENGTH_SHORT).show();
 
            }
        });

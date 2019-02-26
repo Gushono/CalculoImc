@@ -3,6 +3,7 @@ package com.example.guga_.calculoimc;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -18,6 +19,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class Principal extends AppCompatActivity {
 
     @Override public boolean onKeyDown(int keyCode, KeyEvent event)  {
@@ -29,16 +32,21 @@ public class Principal extends AppCompatActivity {
         return super.onKeyDown(keyCode, event); }
 
     FloatingActionButton fabBotao;
-    CardView cvPesoAtual;
-    CardView cvImc;
-    ImageView imgCalculadora, imgBalanca, imgGrafico;
-    ProgressBar barraProgresso;
-    TextView tvpeso, tvImc, tvrestante;
 
-    String[] listaPeso = {"63,00 kg", "65,00 kg"};
-    String[] listaImc  = {"24,7", "25, 8"};
-    String[] listaPesoDiferenca = {"+ 1,5 kg", "+ 0,5 kg"};
-    String[] listaData = {"13/12/2000", "15/12/2000"};
+    CardView cvPesoAtual, cvImc;;
+
+    ImageView imgCalculadora, imgBalanca, imgGrafico;
+
+    ProgressBar barraProgresso;
+
+    TextView tvpeso, tvImc, tvrestante;
+    TextView tvpesoInicialNum, tvPesoAtualnum, tvImcAtualNum, tvPesoIdealNum;
+
+    double pesoAtualvar;
+    double pesoInicialvar;
+    double pesoIdealVar;
+    double imcVar;
+
     ListView lista;
 
 
@@ -69,7 +77,20 @@ public class Principal extends AppCompatActivity {
                     tvpeso.setVisibility(View.INVISIBLE);
                     tvImc.setVisibility(View.INVISIBLE);
                     tvrestante.setVisibility(View.INVISIBLE);
+
+
 //                    barraProgresso.setVisibility(View.VISIBLE);
+
+
+
+
+
+
+
+
+
+
+
 
 
                     return true;
@@ -120,19 +141,55 @@ public class Principal extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Seus dados");
 
+        //FLOATING ACTION BUTTON
         fabBotao = (FloatingActionButton) findViewById(R.id.fabAdicionar);
+
+        //DECLARAÇÃO DOS CARDVIEW
         cvPesoAtual = (CardView) findViewById(R.id.cvInformações);
         cvImc = (CardView) findViewById(R.id.cvImc);
+
+        //DECLARAÇÃO DOS IMAGE VIEW
         imgCalculadora = (ImageView) findViewById(R.id.imgCalculadora);
         imgBalanca = (ImageView) findViewById(R.id.imgBalanca);
         imgGrafico = (ImageView) findViewById(R.id.imgGrafico);
         tvpeso = (TextView) findViewById(R.id.tvPesoAtuaLista);
         tvImc = (TextView) findViewById(R.id.tvImcLista);
         tvrestante = (TextView) findViewById(R.id.tvPesoRestanteLista);
+        tvPesoAtualnum = findViewById(R.id.tvPesoAtualNum);
+        tvpesoInicialNum = findViewById(R.id.tvPesoInicialNum);
+        tvPesoIdealNum = findViewById(R.id.tvPesoIdealNum);
+        tvImcAtualNum = findViewById(R.id.tvImc);
+//        tvImcAtualNum;
+
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         lista = (ListView) findViewById(R.id.listaHistorico);
+
+        BancoDeDados bdPrincipal = new BancoDeDados(Principal.this, 1);
+        Cursor res = bdPrincipal.buscaDados();
+        if(res.getCount() == 0){
+            //show message
+
+        }else{
+
+            while (res.moveToNext()){
+                pesoInicialvar = res.getDouble(0);
+                pesoAtualvar = res.getDouble(1);
+                pesoIdealVar = res.getDouble(2);
+                double pesoRestante = res.getDouble(3);
+                double altura = res.getDouble(4);
+                imcVar = res.getDouble(5);
+                String data = res.getString(6);
+            }
+
+        }
+
+        tvpesoInicialNum.setText(pesoInicialvar+" kg");
+        tvPesoAtualnum.setText(pesoAtualvar+" kg");
+        tvPesoIdealNum.setText(pesoIdealVar+" kg");
+        tvImcAtualNum.setText("O seu IMC é: "+imcVar);
+
 
 
         animaCVPesoAcende();
@@ -142,6 +199,9 @@ public class Principal extends AppCompatActivity {
         animaApagaImgCalculadora();
         animaApagaImgGrafico();
 
+
+
+//        Toast.makeText(Principal.this, ""+pesovar, Toast.LENGTH_SHORT).show();
 
 
         //COLOCAR DADOS AQUI DENTRO DE CADA TEXTVIEW

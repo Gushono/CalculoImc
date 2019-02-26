@@ -87,6 +87,23 @@ public class BancoDeDados extends SQLiteOpenHelper {
     }
 
 
+    public Cursor buscaDados(){
+
+
+        //Conexão com o banco de dados
+        SQLiteDatabase banco = getWritableDatabase();
+
+        //O objeto Cursor é aonde ficará armazenado o retorno do SELECT
+        //O último parâmetro como null indica que não teremos condição WHERE
+        Cursor c = banco.rawQuery("SELECT * FROM usuario", null);
+
+        return c;
+        }
+
+
+
+
+
 
 
 
@@ -122,6 +139,37 @@ public class BancoDeDados extends SQLiteOpenHelper {
 
 
     }
+
+//    public Boolean atualizaUsu(double pesoAtual, double pesoIdeal, double pesoRestante, double imc, String data){
+//        SQLiteDatabase banco = getWritableDatabase(); //Conexão com o banco de dados
+//
+//        //Passagem de valores para as colunas da tabela
+//        ContentValues valoresUsu = new ContentValues();
+//        valoresUsu.put("pesoAtual", pesoAtual);
+//        valoresUsu.put("pesoIdeal", pesoIdeal);
+//        valoresUsu.put("pesoRestante", pesoRestante);
+//        valoresUsu.put("imc", imc);
+//        valoresUsu.put("data", data);
+//
+//        ContentValues valoresHist = new ContentValues();
+//
+//        valoresHist.put("novoPeso", pesoAtual);
+//        valoresHist.put("novoImc", imc);
+//        valoresHist.put("novoRestante", pesoRestante);
+//        valoresHist.put("novaData", data);
+//
+//
+//
+//        if(banco.update("usuario", valoresUsu, "pesoAtual= ?")!= -1 &&
+//                banco.insert("historico", null, valoresHist) != -1){
+//            return true;
+//        }else{
+//            return false;
+//        }
+//
+//
+//
+//    }
 
 //    public boolean cadastrarHistorico(float novoPeso, float novoRestante, float novoImc, String novaData){
 //        SQLiteDatabase banco = getWritableDatabase(); //Conexão com o banco de dados
